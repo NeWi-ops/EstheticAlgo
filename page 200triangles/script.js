@@ -44,14 +44,14 @@ function findCategory(subConcept) {
 // Fonction pour dessiner un triangle imbriqué
 function drawNestedTriangles(colors, containerId) {
   const canvas = document.createElement('canvas');
-  canvas.width = 200;
-  canvas.height = 200;
+  canvas.width = 300;  // Taille du canvas plus grande
+  canvas.height = 300;
   const ctx = canvas.getContext('2d');
   document.getElementById(containerId).appendChild(canvas);
   
   let centerX = canvas.width / 2;
   let centerY = canvas.height / 2;
-  let size = 100;
+  let size = 150;  // Taille initiale plus grande
 
   colors.forEach(color => {
     ctx.fillStyle = color;
@@ -61,8 +61,8 @@ function drawNestedTriangles(colors, containerId) {
     ctx.lineTo(centerX + size / 3, centerY + size / 2);
     ctx.closePath();
     ctx.fill();
-    size -= 20;
-    centerY += 5;
+    size -= 30; // Réduction de taille à chaque triangle
+    centerY += 10; // Décalage vertical pour effet imbriqué
   });
 }
 
