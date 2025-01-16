@@ -65,11 +65,11 @@ function setup() {
     }
 
     // Étape 3 : Dessiner les triangles imbriqués avec alternance de direction
-    let xPos = (i % 2 === 0) ? 100 : 600;  // Alternance gauche/droite
-    drawNestedTriangles(xPos, yOffset, chosenColors);
+    let isLeft = i % 2 ===  0 ;// Alternance gauche/droite
+    drawNestedTriangles(100, yOffset, chosenColors,isLeft);
 
     // Étape 4 : Afficher les concepts et les numéros des couleurs à droite ou à gauche
-    displayDetails(chosenSubConcepts, colorDetails, yOffset, xPos);
+    displayDetails(chosenSubConcepts, colorDetails, yOffset, isLeft);
 
     yOffset += 250; // Décaler vers le bas pour chaque ensemble de triangles
   }
@@ -80,53 +80,37 @@ function displayDetails(subConcepts, details, yOffset, xPos) {
   fill(0);
   textSize(12);
   textAlign(LEFT, TOP);
-  if (xPos === 100) {  // Si le triangle est à gauche, afficher à droite
-    text(`Concepts : ${subConcepts.join(", ")}`, xPos + 250, yOffset + 10);
-    textSize(10);
-    text(details.join("\n"), xPos + 250, yOffset + 30);
-  } else {  // Si le triangle est à droite, afficher à gauche
-    text(`Concepts : ${subConcepts.join(", ")}`, xPos - 350, yOffset + 10);
-    textSize(10);
-    text(details.join("\n"), xPos - 350, yOffset + 30);
-  }
+  let xPos = isLeft ? 50 : 450; // Positionner à gauche ou à droite
+  text(`Concepts : ${subConcepts.join(", ")}`, xPos, yOffset + 10);
+  textSize(10);
+  text(colors.join("\n"), xPos, yOffset + 30);
 }
 
-// Dessiner les triangles imbriqués
-function drawNestedTriangles(x, y, colors) {
-  let size = 200;
-  for (let i = 0; i < colors.length; i++) {
-    fill(colors[i]);
-    triangle(
-      x - size / 3, y + size / 2,
-      x + size, y,
-      x - size / 3, y - size / 2
-    );
-    size -= 40; // Réduire la taille de chaque triangle imbriqué
-    x-=5; // Déplacer le triangle vers le bas
-  }
-}
-function drawNestedTriangles(x, y, colors) {
-  let size = 200;
-  for (let i = 0; i < colors.length; i++) {
-    fill(colors[i]);
-    if (i %2 === 0) {  // Triangle à gauche
-      triangle(
-        x - size / 3, y + size / 2,
-        x + size, y,
-        x - size / 3, y - size / 2
-      );
-    } 
-    else {  // Triangle à droite
-    triangle(
-        x - size / 3, y ,
-        x + size, y,
-        x - size / 3, y - size / 2
-      );
+  function drawNestedTriangles(x, y, colors, isLeft) {
+    let size = 200;
+    for (let i = 0; i < colors.length; i++) {
+      fill(colors[i]);
+      if (isLeft) {
+        // Triangles de gauche
+        triangle(
+          x - size / 3, y + size / 2,
+          x + size / 3, y - size / 2,
+          x - size / 3, y - size / 2
+        );
+      } else {
+        // Triangles de droite (rotation de 90°)
+        triangle(
+          x + size / 2, y - size / 3,
+          x - size / 2, y - size / 3,
+          x, y + size / 3
+        );
+      }
+      size -= 40; // Réduire la taille de chaque triangle imbriqué
+      x += isLeft ? -5 : 5; // Décalage horizontal (différent pour gauche/droite)
     }
-    size -= 40; // Réduire la taille de chaque triangle imbriqué
-    x -= 5; // Déplacer le triangle vers le bas
   }
-}
+
+  
 
 // Trouve la catégorie d'un concept
 function findCategory(subConcept) {
@@ -140,5 +124,4 @@ function findCategory(subConcept) {
 // Retourne un sous-ensemble aléatoire
 function randomSubset(array, count) {
   let shuffled = [...array].sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, count);
-}
+  return shuffled.slice(0, count); }
