@@ -1,16 +1,15 @@
 main {
   font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column; /* Changé pour column pour l'organisation verticale */
+  justify-content: flex-start;
+  align-items: center;
   min-height: 100vh;
   margin: 0;
-  padding: 20px;
+  height: 100%;
   background-color: black;
+  position: relative;
 }
-
-/* style.css */
 
 /* Styles du header */
 header {
@@ -20,12 +19,13 @@ header {
   text-align: center;
   position: relative; /* Pour garder le header au-dessus du contenu */
   z-index: 10; /* Assure que le header reste au-dessus du contenu */
+  width: 100%;
 }
 
 nav {
   padding: 15px;
   border-radius: 15px;
-  background-color: #ffffff;
+  background-color: #656262;
 }
 
 nav ul {
@@ -60,10 +60,13 @@ nav ul li a:hover {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin: 20px auto;
   padding: 20px;
   border-radius: 15px;
-  background-color: #ffffff;
+  background-color: #3d3d3d;
+  height: 240px;
+  width: 1250px;
+  margin-bottom: 0;
 }
 
 .concept {
@@ -75,12 +78,13 @@ nav ul li a:hover {
   border-radius: 15px;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.5);
   width: 250px;
+  height: 200px;
   color: rgb(0, 0, 0);
 }
 
 .concept h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 15px;
   font-weight: bold;
 }
 
@@ -90,7 +94,7 @@ nav ul li a:hover {
 }
 
 .concept ul li {
-  font-size: 14px;
+  font-size: 12px;
   margin: 5px 0;
 }
 
@@ -102,7 +106,7 @@ nav ul li a:hover {
 }
 
 .concept .color-box div {
-  height: 20px;
+  height: 15px;
   border-radius: 5px;
   flex-grow: 1;
   margin: 0 5px;
@@ -114,17 +118,6 @@ nav ul li a:hover {
   transition: all 0.3s ease;
 }
 
-
-/* .container {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 40px 20px;
-  margin-top: 75px; 
-} */
-
 body {
   margin: 0; 
   padding: 0;
@@ -132,19 +125,40 @@ body {
 
 .container {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column; /* Changé pour column */
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%; /* Modifié pour permettre le scroll horizontal */
 }
 
 #canvas-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Empêche le retour à la ligne */
   gap: 30px;
-  justify-content: center;
+  padding: 20px;
   width: 100%;
+  overflow-x: auto; /* Permet le défilement horizontal */
+  overflow-y: hidden; /* Cache le défilement vertical */
+  justify-content: flex-start; /* Aligne les éléments au début */
+  scrollbar-width: thin;
+  scrollbar-color: #666 #333;
+}
+
+#canvas-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+#canvas-container::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 4px;
+}
+
+#canvas-container::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 4px;
+}
+
+#canvas-container::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }
 
 .triangle-container {
@@ -152,11 +166,14 @@ body {
   flex-direction: column;
   align-items: center;
   width: 280px;
-  background-color: #fff;
+  background-color: #444444;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 15px;
   margin-bottom: 20px;
+  flex: 0 0 auto; /* Empêche la déformation des conteneurs*/
+  margin: 10px;
+  min-width: 280px; /*Assure une largeur minimale */
 }
 
 .triangle-container canvas {
@@ -171,8 +188,8 @@ body {
 }
 
 .triangle-info {
-  background-color: #fff;
-  padding: 15px;
+  background-color: #e3e3e3;
+  padding: 5px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   width: 100%;

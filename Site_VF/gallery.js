@@ -108,8 +108,8 @@ function displayTriangleInfo(colors, subConcepts, containerId) {
   const infoDiv = document.createElement('div');
   infoDiv.classList.add('triangle-info');
   
-  const conceptsText = `Concepts: ${subConcepts.join(", ")}`;
-  const colorsText = `Couleurs: ${colors.join(", ")}`;
+  const conceptsText = `${subConcepts.join(", ")}`;
+  const colorsText = ` ${colors.join(", ")}`;
 
   infoDiv.innerHTML = `<p>${conceptsText}</p><p>${colorsText}</p>`;
   
@@ -117,43 +117,119 @@ function displayTriangleInfo(colors, subConcepts, containerId) {
 }
 
 // Fonction principale pour créer et afficher les triangles
-function generateTriangles() {
-  for (let i = 0; i < 201; i++) {
-    // Choisir aléatoirement 2 ou 3 concepts
-    let numConcepts = Math.random() < 0.66 ? 2 : 3;
-    let subConcepts = [];
-    for (let category in concepts) {
-      subConcepts.push(...Object.keys(concepts[category]));
-    }
-    let chosenSubConcepts = randomSubset(subConcepts, numConcepts);
+// Conserver la partie des concepts...
 
-    // Sélectionner 4 couleurs au total sans doublons
-    let chosenColors = [];
-    while (chosenColors.length < 4) {
-      for (let subConcept of chosenSubConcepts) {
-        if (chosenColors.length < 4) {
-          let category = findCategory(subConcept);
-          let color;
-          do {
-            color = concepts[category][subConcept][Math.floor(Math.random() * concepts[category][subConcept].length)];
-          } while (chosenColors.includes(color));
-          chosenColors.push(color);
+function generateTriangles() {
+  const container = document.getElementById('canvas-container');
+  
+  // Création d'un conteneur pour le lot de triangles
+  const batchSize = 20;
+  let currentIndex = 0;
+  
+  function generateBatch() {
+    const fragment = document.createDocumentFragment();
+    
+    for (let i = 0; i < batchSize && currentIndex < 201; i++, currentIndex++) {
+      // Sélection des concepts
+      let numConcepts = Math.random() < 0.66 ? 2 : 3;
+      let subConcepts = [];
+      for (let category in concepts) {
+        subConcepts.push(...Object.keys(concepts[category]));
+      }
+      let chosenSubConcepts = randomSubset(subConcepts, numConcepts);
+
+      // Sélection des couleurs
+      let chosenColors = [];
+      while (chosenColors.length < 4) {
+        for (let subConcept of chosenSubConcepts) {
+          if (chosenColors.length < 4) {
+            let category = findCategory(subConcept);
+            let color;
+            do {
+              color = concepts[category][subConcept][Math.floor(Math.random() * concepts[category][subConcept].length)];
+            } while (chosenColors.includes(color));
+            chosenColors.push(color);
+          }
         }
       }
+
+      const triangleContainer = document.createElement('div');
+      triangleContainer.classList.add('triangle-container');
+      triangleContainer.id = `triangle-${currentIndex}`;
+      
+      // Animation au survol
+      triangleContainer.addEventListener('mouseenter', () => {
+        triangleContainer.style.transform = 'translateY(-10px)';
+        triangleContainer.style.boxShadow = '0 6px 18px rgba(0, 0, 0, 0.2)';
+      });
+      
+      triangleContainer.addEventListener('mouseleave', () => {
+        triangleContainer.style.transform = 'translateY(0)';
+        triangleContainer.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+      });
+      
+      fragment.appendChild(triangleContainer);
+
+      // Utilisation de requestAnimationFrame pour le rendu
+      requestAnimationFrame(() => {
+        drawNestedTriangles(chosenColors, triangleContainer.id);
+        displayTriangleInfo(chosenColors, chosenSubConcepts, triangleContainer.id);
+      });
     }
-
-    // Créer un conteneur pour le triangle et les informations
-    const triangleContainer = document.createElement('div');
-    triangleContainer.classList.add('triangle-container');
-    triangleContainer.id = `triangle-${i}`;
-    document.getElementById('canvas-container').appendChild(triangleContainer);
-
-    // Dessiner le triangle
-    drawNestedTriangles(chosenColors, triangleContainer.id);
-
-    // Afficher les informations sous le triangle
-    displayTriangleInfo(chosenColors, chosenSubConcepts, triangleContainer.id);
+    
+    container.appendChild(fragment);
+    
+    // Continue la génération si nécessaire
+    if (currentIndex < 201) {
+      requestAnimationFrame(generateBatch);
+    }
   }
+  
+  // Démarrage de la génération
+  generateBatch();
+
+  // Ajout du défilement fluide
+  const scrollStep = 300;
+  
+  // Fonction pour le défilement fluide
+  function smoothScroll(direction) {
+    const start = container.scrollLeft;
+    const target = start + (direction * scrollStep);
+    const duration = 300;
+    const startTime = performance.now();
+    
+    function scroll(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Fonction d'easing
+      const easeInOutCubic = progress => 
+        progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      
+      container.scrollLeft = start + (target - start) * easeInOutCubic(progress);
+      
+      if (progress < 1) {
+        requestAnimationFrame(scroll);
+      }
+    }
+    
+    requestAnimationFrame(scroll);
+  }
+
+  // Gestion du défilement avec les touches fléchées
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+      smoothScroll(-1);
+    } else if (e.key === 'ArrowRight') {
+      smoothScroll(1);
+    }
+  });
 }
 
-generateTriangles();
+// Initialisation
+window.onload = () => {
+  displayConcepts();
+  generateTriangles();
+};
