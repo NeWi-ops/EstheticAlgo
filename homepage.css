@@ -1,0 +1,25 @@
+/* Style de base pour centrer la page et enlever les marges */
+body { 
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0; /* couleur par défaut du fond */
+    color: black; /* couleur du texte */
+    transition: color 1s ease;  /* Transition fluide pour la couleur du texte */
+}
+
+/* Style du texte qui s'affiche au centre du triangle */
+#centerText {
+    position: absolute;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: black;  /* couleur initiale du texte */
+    cursor: pointer;
+    user-select: none;
+    z-index: 10;  /* S'assurer que le texte soit au-dessus du canevas */
+    transition: color 1s ease; /* Transition fluide pour la couleur du texte */
+}
