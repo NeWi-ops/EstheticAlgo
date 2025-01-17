@@ -25,6 +25,8 @@ const concepts = {
   }
 };
 
+
+
 const NUM_SETS = 20;
 const VERTICAL_SPACING = 300;
 let chosenColors = Array(NUM_SETS).fill().map(() => []); // Tableau pour chaque set
@@ -95,16 +97,20 @@ function createTextContainers() {
     // Joindre les concepts avec des virgules
     const conceptsText = uniqueConcepts.join(', ');
     
+    // Générer les codes hexadécimaux associés aux couleurs
+    const colorHexCodes = chosenColors[i].map(color => color); // Vous utilisez déjà des codes hexadécimaux dans `chosenColors`
+
+    // Générer le HTML avec les concepts et les couleurs (et les codes hex)
     textContainer.innerHTML = `
       <div class="concepts">
         <h2>${conceptsText}</h2>
       </div>
       <div class="colors hidden">
         <h2>Couleurs</h2>
-        <p class="couleur-1">${chosenColors[i][0]}</p>
-        <p>${chosenColors[i][1]}</p>
-        <p>${chosenColors[i][2]}</p>
-        <p>${chosenColors[i][3]}</p>
+        <p class="couleur-1">${chosenColors[i][0]} - ${colorHexCodes[0]}</p>
+        <p>${chosenColors[i][1]} - ${colorHexCodes[1]}</p>
+        <p>${chosenColors[i][2]} - ${colorHexCodes[2]}</p>
+        <p>${chosenColors[i][3]} - ${colorHexCodes[3]}</p>
       </div>
     `;
     textContainer.style.left = '50%';
@@ -112,6 +118,7 @@ function createTextContainers() {
     container.appendChild(textContainer);
   }
 }
+
 
 function draw() {
   background(255);
@@ -166,36 +173,49 @@ function drawTriangle(color, size, centerX, centerY, setIndex, triangleIndex, is
   // Dessiner le triangle
   fill(color);
   let textX, textY;
-  
+
   if (isLeft) {
     triangle(
       centerX + size / 2, centerY,
       centerX - size / 2, centerY - size / 3,
       centerX - size / 2, centerY + size / 3
     );
-    textX = centerX - size / 3; // Position du texte pour triangle gauche
-    textY = centerY ;   
+    textX = centerX - size / 5; // Position du texte pour triangle gauche
+    textY = centerY;
   } else {
     triangle(
       centerX - size / 2, centerY,
       centerX + size / 2, centerY - size / 3,
       centerX + size / 2, centerY + size / 3
     );
-    textX = centerX + size / 3; // Position du texte pour triangle droit
-    textY = centerY ; 
+    textX = centerX + size / 5; // Position du texte pour triangle droit
+    textY = centerY;
   }
 
   // Ajouter le texte si le triangle est cliqué
   if (isClicked[setIndex]) {
     push();
-    fill(darkenColor(color));
+    fill(darkenColor(color)); // Couleur de texte sombre pour contraste
     textAlign(CENTER, CENTER);
-    textSize(18 - triangleIndex * 2); // Texte plus petit pour les triangles plus petits
+
+    // Afficher le concept au-dessus du triangle
+    textSize(16 - triangleIndex * 1.5); // Légèrement plus petit pour les triangles plus petits
     const concept = chosenConcepts[setIndex][triangleIndex];
-    text(concept || '', textX, textY);
+    text(concept, textX, textY - 12);  // Concept au-dessus du triangle, distance réduite
+
+    // Afficher le code hexadécimal en dessous
+    const hexColor = color; // Code hex de la couleur
+    textSize(12); // Taille du texte plus petite pour le code hexadécimal
+    text(hexColor, textX, textY + 6);  // Code hexadécimal en dessous du concept, distance réduite
+
     pop();
   }
 }
+
+
+
+
+
 
 function mousePressed() {
   for (let setIndex = 0; setIndex < NUM_SETS; setIndex++) {
