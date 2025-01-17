@@ -96,7 +96,7 @@ function drawFirstTriangle() {
 
 function positionText() {
   const textDiv = document.getElementById('centerText');
-  const x = triangleCenterX / 1.07;
+  const x = triangleCenterX / 1.06;
   const y = triangleCenterY;
 
   // Centre le texte par rapport au triangle
