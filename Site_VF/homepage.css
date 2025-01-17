@@ -14,6 +14,7 @@ body {
 /* Style du texte qui s'affiche au centre du triangle */
 #centerText {
     position: absolute;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 24px;
     font-weight: bold;
     color: black;  /* couleur initiale du texte */
